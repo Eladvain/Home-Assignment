@@ -17,21 +17,20 @@ const UrlList = () => {
         console.log("url_list = "+JSON.stringify(url_list));
         const message = url_list[0]._source.message;
         let spec_url;
-        const urls = url_list.map((item)=>{
+        const all_url = url_list.map((item)=>{
           let url = item._source.message[0].link;
-          console.log("url = "+JSON.stringify(url));
+          console.log("url = " + JSON.stringify(url));
           if(url.url !== null){
-             spec_url = url.url.match(/redirect=([^&]+)/);
-             if(spec_url === null){
-              console.log("there is no match");
-             }
-             if(spec_url !== null){
+            spec_url = url.url.match(/redirect=([^&]+)/);
+            if(spec_url !== null){
               console.log("url after match = "+spec_url[1]);
-              return spec_url[1];
+              return decodeURIComponent(spec_url[1]);
             }
-          }
+          } 
         })
-        console.log("urls = " + JSON.stringify(urls));
+        
+        let all_url_no_null = await all_url.filter((url_item) => typeof url_item !== 'undefined');
+        console.log("urls = " + JSON.stringify(all_url_no_null));
       }
       catch(error){
         console.error("error = "+error)
