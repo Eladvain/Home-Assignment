@@ -8,7 +8,7 @@ const UrlList = () => {
 
     const getList = async()=>{
       try{
-        const url_response = await fetch(`https://homeassignment-62de.restdb.io/rest/messages`,{
+        const url_response = await fetch('https://homeassignment-62de.restdb.io/rest/messages',{
           headers : {
             "x-apikey" : "66d059205842652f38576cb5" 
           }
@@ -40,7 +40,8 @@ const UrlList = () => {
       
       let match_urls_no_null = await match_urls.filter((item) => typeof item !== 'undefined');
       console.log("match_urls = "+JSON.stringify(match_urls_no_null));
-      
+      setUrlResult(match_urls_no_null);
+
       }catch(error){
         console.error("error = "+error)
       }
@@ -48,6 +49,25 @@ const UrlList = () => {
   
     getList();
   }, [])
+
+  const groupedByCountry = urlResult.reduce((country_map, item) => {
+    let {country} = item;
+    if(!country_map[country]){
+      country_map[country] = []; 
+    }
+    country_map[country].push(item);
+    return country_map;
+  },{});
+
+  for(const country in groupedByCountry){
+    groupedByCountry[country].sort((a,b) => b.est_emp - a.est_emp); 
+  }
+
+  // const country_array_by_alpha_asc = Object.keys(groupedByCountry).sort();
+
+  // console.log("country_list_by_asc = "+ country_array_by_alpha_asc);
+
+
   return (
     <div>
       <h1>hellp</h1>
