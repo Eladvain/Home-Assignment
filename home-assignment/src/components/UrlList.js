@@ -6,14 +6,14 @@ const UrlList = () => {
 
   const [urlResult, setUrlResult] = useState({});
   const [sortCountries, setSortCountries] = useState ([]);
-  
+
   const isFirstRender = useRef(true);
 
   useEffect(()=>{
 
     const getList = async()=>{
       try{
-        console.log("hereee");
+        
            //get all urls from messages.json url
            const all_urls = await getAllUrl();
 
@@ -50,12 +50,12 @@ const UrlList = () => {
 
            //sort countries by alphabetical order.
            const country_array_by_alpha_asc =  Object.keys(groupedByCountry).sort();
-           console.log("countries = "+country_array_by_alpha_asc)
+           
            setSortCountries(country_array_by_alpha_asc);
            setUrlResult(groupedByCountry);
 
          } catch (error) {
-            console.error('Error loading data:', error);
+            console.error('Error loading data or processing data:', error.message);
          }  
 
     }
@@ -63,7 +63,6 @@ const UrlList = () => {
 
     //In first render I want to see the data
   if(isFirstRender.current){
-    console.log("inside");
      getList();
     isFirstRender.current = false;
   }  
@@ -91,9 +90,9 @@ const UrlList = () => {
   return (
     <div className='url-list'>
       {sortCountries.map((country, index) => (
-        <div key = {index} >
-          <h1>{country}</h1>
-          <p>---------------------------------------------</p>
+        <div className='list-of-spec-country' key = {index} >
+          <h1 className='country-name'>{country}</h1>
+          <p className='p'>---------------------------------------------</p>
           {urlResult[country].map((item, i) => (
               <UrlItem country = {country} urlItem = {item} key = {i} />
       ))}

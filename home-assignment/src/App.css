@@ -1,10 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .url-item{
   border:1px solid green;
+  width: 100%;
+  margin : 20px 5px;
+}
+
+.list-of-spec-country{
+  width: 30%;
+  margin-left : 5px;
+}
+
+.country-name{
+  text-align: center;
 }
 
 #headline{
   text-align: center;
   color: blue;
+}
+
+.p{
+  text-align: center;
 }
 
 a {

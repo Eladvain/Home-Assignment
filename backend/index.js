@@ -10,7 +10,7 @@ app.use(express.json());
 app.get('/api/messages', async (req, res) => {
 
   try{
-    console.log("inside");
+    
     // fetch to this address acordding to assignement instrucstions
     const url_response = await fetch(`https://cdn.taboola.com/mobile-config/home-assignment/messages.json`);
     const url_list = await url_response.json();
@@ -31,7 +31,7 @@ app.get('/api/messages', async (req, res) => {
 
     //Here I remove all null in all_url variable and get only valid urls without null
     let all_url_no_null = await all_url.filter((url_item) => typeof url_item !== 'undefined' && url_item !== null);
-    console.log("all url = "+JSON.stringify(all_url_no_null))
+    
     res.json(all_url_no_null);
 
   }catch (err) {

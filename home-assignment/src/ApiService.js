@@ -10,8 +10,7 @@ export const getAllUrl = async () => {
     return all_urls;
     
   }catch (err) {
-      console.error("error = "+err);
-      throw err
+      throw err;
     }
 }
 
@@ -26,6 +25,6 @@ export const getAllData = async (all_url)=>{
     return all_data;
     
     }catch(err){
-      console.error("error = "+err)
+      throw err;
     }
 }
