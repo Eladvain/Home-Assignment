@@ -1,77 +1,101 @@
-import React, { useEffect, useState } from 'react'
-import { allUrl, allData } from '../ApiService';
+import React, { useEffect, useState, useRef } from 'react'
+import { getAllUrl, getAllData } from '../ApiService';
 import UrlItem from './UrlItem';
 
 const UrlList = () => {
 
   const [urlResult, setUrlResult] = useState({});
   const [sortCountries, setSortCountries] = useState ([]);
+  
+  const isFirstRender = useRef(true);
 
   useEffect(()=>{
 
     const getList = async()=>{
       try{
-           const all_urls = await allUrl();
-          //  console.log("all_urls = "+JSON.stringify(all_urls))
-           const data = await allData(all_urls);
-          //  console.log("data = "+JSON.stringify(data))
+        console.log("hereee");
+           //get all urls from messages.json url
+           const all_urls = await getAllUrl();
 
+           //get all data from data.json url
+           const data = await getAllData(all_urls);
+        
+           //get all data that has match between urls in data and urls in all_urls.
            let match_urls = await all_urls.map((url) =>{
              return data.find(item => item.url === url )
            });
-           let all_matchUrl_no_null = await match_urls.filter((url_item) => typeof url_item !== 'undefined' && url_item !== null);
-           console.log("match_urls = "+JSON.stringify(all_matchUrl_no_null))
 
+           //eliminate null 
+           let all_matchUrl_no_null = await match_urls.filter((url_item) => typeof url_item !== 'undefined' && url_item !== null);
+           
+           //arrange all data in an object of {"country",[item1, item2...]} - group by country
            const groupedByCountry = await all_matchUrl_no_null.reduce((country_map, item) => {
-            // console.log("item = "+JSON.stringify(item));
+            
              let {country} = item;
-            //  console.log("country = "+country);
+            
+             //if country is not exist in keys
              if(!country_map[country]){
                country_map[country] = []; 
              }
+
              country_map[country].push(item);
              return country_map;
+
            },{});
             
+           //sort every country and group it by estimated number of employees.
            for(const country in groupedByCountry){
              await groupedByCountry[country].sort((a,b) => b.est_emp - a.est_emp); 
            }
 
-          //  console.log("groupCountry = "+JSON.stringify(groupedByCountry));
-
+           //sort countries by alphabetical order.
            const country_array_by_alpha_asc =  Object.keys(groupedByCountry).sort();
-          //  console.log("type = "+typeof country_array_by_alpha_asc);
-            
-          //  console.log("country_list_by_asc = "+ country_array_by_alpha_asc);
-
+           console.log("countries = "+country_array_by_alpha_asc)
            setSortCountries(country_array_by_alpha_asc);
            setUrlResult(groupedByCountry);
+
          } catch (error) {
             console.error('Error loading data:', error);
          }  
 
     }
+    // I execute interval because if data changed, I want to see this changes in web page.
+
+    //In first render I want to see the data
+  if(isFirstRender.current){
+    console.log("inside");
+     getList();
+    isFirstRender.current = false;
+  }  
+
+  //after I want each minute to get again all data, because maybe data is changed in server.
+  else{
+    //reder getList every one minute
+    const interval = setInterval(() =>{
+      getList();
+    }, 60000);
+    return () => clearInterval(interval);  
   
-    getList();
+  }
   },[])
 
   useEffect(()=>{
-    console.log("urlResult = "+JSON.stringify(urlResult));
+    return;
   },[urlResult])
 
   useEffect(()=>{
-    console.log("sort countries = "+JSON.stringify(sortCountries));
+    return;
   },[sortCountries])
 
   
   return (
     <div className='url-list'>
-      {sortCountries.map(country => (
-        <div className='country-name' key = {country}>
+      {sortCountries.map((country, index) => (
+        <div key = {index} >
           <h1>{country}</h1>
           <p>---------------------------------------------</p>
-          {urlResult[country].map((item) => (
-              <UrlItem country = {country} urlItem = {item} key = {country}/>
+          {urlResult[country].map((item, i) => (
+              <UrlItem country = {country} urlItem = {item} key = {i} />
       ))}
         </div>
         
@@ -81,47 +105,3 @@ const UrlList = () => {
 }
 
 export default UrlList
-
-// try{
-        
-      //   const url_response = await fetch('https://homeassignment-62de.restdb.io/rest/messages',{
-      //     headers : {
-      //       "x-apikey" : '66d059205842652f38576cb5',
-      //       "Access-Control-Allow-Origin": "*" 
-      //     }
-      //   })
-      //   const url_list = await url_response.json();
-      //   let spec_url;
-      //   const all_url = url_list.map((item)=>{
-      //     let link = item._source.message[0].link;
-          
-      //     if(link.url !== null){
-      //       spec_url = link.url.match(/redirect=([^&]+)/);
-      //       return spec_url ? decodeURIComponent(spec_url[1]) : null;
-      //     } 
-      //   })
-
-      //   let all_url_no_null = await all_url.filter((url_item) => typeof url_item !== 'undefined' && url_item !== null);
-      //   console.log("urls = " + JSON.stringify(all_url_no_null));
-
-
-
-      // try{
-      // const data_response = await fetch('https://domaindata-e2bd.restdb.io/rest/data', {
-      //   headers : {
-      //     "x-apikey" : "66d7141f48fc47b023308bb3"
-      //   }
-      // })
-      // let data = await data_response.json();
-      
-      // let match_urls = await all_url_no_null.map((url) =>{
-      //   return data.find(item => item.url === url );
-      // })
-      
-      // let match_urls_no_null = await match_urls.filter((item) => typeof item !== 'undefined');
-      // console.log("match_urls = "+JSON.stringify(match_urls_no_null));
-      // setUrlResult(match_urls_no_null);
-
-      // }catch(error){
-      //   console.error("error = "+error)
-      // }
