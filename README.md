@@ -9,10 +9,13 @@ Backend :
 2) My server is running on port 5001.
 3) My server has 2 end point:
    
-	a) '/api/messages' - call to 'https://cdn.taboola.com/mobile-config/home-assignment/messages.json' with fetch and get valid urls 	    		     from there.
+	a) '/api/messages' - call to 'https://cdn.taboola.com/mobile-config/home-assignment/messages.json' with fetch and get valid urls
+
+	  		     from there.
 
 	b)'/api/data' - call to 'https://cdn.taboola.com/mobile-config/home-assignment/data.json' with fetch and get all data from
-			there.
+
+   			there.
 
 5) In order to run my server, you only need to run : node index.js in the true path like Taboola_Home_Assignment\Home-Assignment\backend.
 
