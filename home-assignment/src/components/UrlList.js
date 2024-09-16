@@ -4,53 +4,63 @@ import { allUrl, allData } from '../ApiService';
 const UrlList = () => {
 
   const [urlResult, setUrlResult] = useState({});
+  // const [countries, setCountries] = useState ([]);
 
   useEffect(()=>{
 
     const getList = async()=>{
       try{
-              const all_urls = await allUrl();
-        
-              const data = await allData(all_urls);
+           const all_urls = await allUrl();
+          //  console.log("all_urls = "+JSON.stringify(all_urls))
+           const data = await allData(all_urls);
+          //  console.log("data = "+JSON.stringify(data))
 
-              let match_urls = await all_url_no_null.map((url) =>{
-                return data.find(item => item.url === url )
-              });
+           let match_urls = await all_urls.map((url) =>{
+             return data.find(item => item.url === url )
+           });
+           let all_matchUrl_no_null = await match_urls.filter((url_item) => typeof url_item !== 'undefined' && url_item !== null);
+           console.log("match_urls = "+JSON.stringify(all_matchUrl_no_null))
 
-              const groupedByCountry = match_urls.reduce((country_map, item) => {
-                let {country} = item;
-                if(!country_map[country]){
-                  country_map[country] = []; 
-                }
-                country_map[country].push(item);
-                return country_map;
-              },{});
+           const groupedByCountry = await all_matchUrl_no_null.reduce((country_map, item) => {
+            console.log("item = "+JSON.stringify(item));
+             let {country} = item;
+             console.log("country = "+country);
+             if(!country_map[country]){
+               country_map[country] = []; 
+             }
+             country_map[country].push(item);
+             return country_map;
+           },{});
             
-              for(const country in groupedByCountry){
-                groupedByCountry[country].sort((a,b) => b.est_emp - a.est_emp); 
-              }
+           for(const country in groupedByCountry){
+             await groupedByCountry[country].sort((a,b) => b.est_emp - a.est_emp); 
+           }
 
-              setUrlResult(groupedByCountry);
-            } catch (error) {
-              console.error('Error loading data:', error);
-            }
+           console.log("groupCountry = "+JSON.stringify(groupedByCountry));
+
+          //  const country_array_by_alpha_asc = await Object.keys(groupedByCountry).sort();
+          //  console.log("type = "+typeof country_array_by_alpha_asc);
             
-              // const country_array_by_alpha_asc = Object.keys(groupedByCountry).sort();
-            
-              // console.log("country_list_by_asc = "+ country_array_by_alpha_asc);
-            
-            
-      
+          //  console.log("country_list_by_asc = "+ country_array_by_alpha_asc);
+
+           setUrlResult(groupedByCountry);
+         } catch (error) {
+            console.error('Error loading data:', error);
+         }  
 
     }
   
     getList();
-  }, [])
+  },[])
+
+  useEffect(()=>{
+    console.log("urlResult = "+JSON.stringify(urlResult));
+  },[urlResult])
 
   
   return (
-    <div>
-      <h1>hellp</h1>
+    <div className='url-list'>
+      <h1>Taboola Assignement</h1>
     </div>
   )
 }
