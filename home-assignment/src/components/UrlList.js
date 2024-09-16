@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { allUrl, allData } from '../ApiService';
+import UrlItem from './UrlItem';
 
 const UrlList = () => {
 
   const [urlResult, setUrlResult] = useState({});
-  // const [countries, setCountries] = useState ([]);
+  const [sortCountries, setSortCountries] = useState ([]);
 
   useEffect(()=>{
 
@@ -22,9 +23,9 @@ const UrlList = () => {
            console.log("match_urls = "+JSON.stringify(all_matchUrl_no_null))
 
            const groupedByCountry = await all_matchUrl_no_null.reduce((country_map, item) => {
-            console.log("item = "+JSON.stringify(item));
+            // console.log("item = "+JSON.stringify(item));
              let {country} = item;
-             console.log("country = "+country);
+            //  console.log("country = "+country);
              if(!country_map[country]){
                country_map[country] = []; 
              }
@@ -36,13 +37,14 @@ const UrlList = () => {
              await groupedByCountry[country].sort((a,b) => b.est_emp - a.est_emp); 
            }
 
-           console.log("groupCountry = "+JSON.stringify(groupedByCountry));
+          //  console.log("groupCountry = "+JSON.stringify(groupedByCountry));
 
-          //  const country_array_by_alpha_asc = await Object.keys(groupedByCountry).sort();
+           const country_array_by_alpha_asc =  Object.keys(groupedByCountry).sort();
           //  console.log("type = "+typeof country_array_by_alpha_asc);
             
           //  console.log("country_list_by_asc = "+ country_array_by_alpha_asc);
 
+           setSortCountries(country_array_by_alpha_asc);
            setUrlResult(groupedByCountry);
          } catch (error) {
             console.error('Error loading data:', error);
@@ -57,10 +59,23 @@ const UrlList = () => {
     console.log("urlResult = "+JSON.stringify(urlResult));
   },[urlResult])
 
+  useEffect(()=>{
+    console.log("sort countries = "+JSON.stringify(sortCountries));
+  },[sortCountries])
+
   
   return (
     <div className='url-list'>
-      <h1>Taboola Assignement</h1>
+      {sortCountries.map(country => (
+        <div className='country-name' key = {country}>
+          <h1>{country}</h1>
+          <p>---------------------------------------------</p>
+          {urlResult[country].map((item) => (
+              <UrlItem country = {country} urlItem = {item} key = {country}/>
+      ))}
+        </div>
+        
+      ))}
     </div>
   )
 }

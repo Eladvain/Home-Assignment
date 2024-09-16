@@ -1,0 +1,17 @@
+.url-item{
+  border:1px solid green;
+}
+
+#headline{
+  text-align: center;
+  color: blue;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}

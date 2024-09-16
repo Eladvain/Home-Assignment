@@ -11,11 +11,7 @@ app.get('/api/messages', async (req, res) => {
 
   try{
         console.log("inside messages");
-    const url_response = await fetch(`https://homeassignment-62de.restdb.io/rest/messages`,{
-      headers : {
-        "x-apikey" : '66d059205842652f38576cb5'
-      }
-    })
+    const url_response = await fetch(`https://cdn.taboola.com/mobile-config/home-assignment/messages.json`);
     const url_list = await url_response.json();
     // console.log("response = "+ JSON.stringify(url_list));
     let spec_url;
@@ -42,11 +38,7 @@ app.get('/api/messages', async (req, res) => {
 app.get('/api/data', async (req, res) => {
 
   try{
-    const data_response = await fetch('https://domaindata-e2bd.restdb.io/rest/data', {
-      headers : {
-        "x-apikey" : "66d7141f48fc47b023308bb3"
-      }
-    })
+    const data_response = await fetch('https://cdn.taboola.com/mobile-config/home-assignment/data.json')
 
     let data = await data_response.json();
     
