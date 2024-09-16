@@ -1,4 +1,4 @@
-<!-- # Home-Assignment
+ # Home-Assignment
 
 Taboola Assignement
 
@@ -21,4 +21,3 @@ Frontend :
      call getList function each one minute and get again all data if something changed in data.
 4) In order to run my front app, you only need to run : npm start in the true path like Taboola_Home_Assignment\Home-Assignment\home-assignment.
  
- -->
